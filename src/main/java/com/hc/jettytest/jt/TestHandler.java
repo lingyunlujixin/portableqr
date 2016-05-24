@@ -41,8 +41,8 @@ public class TestHandler extends AbstractHandler
         String req2 = request.getParameter("today");
         
         // is date
-        String sval = H2Util.validDate(req1);
-        String today = H2Util.validDate(req2);
+        String sval = H2Util.formatDate(req1);
+        String today = H2Util.formatDate(req2);
         
         List<QfEntry> lst = null;
         

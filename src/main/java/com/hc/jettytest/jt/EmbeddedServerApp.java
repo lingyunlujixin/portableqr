@@ -43,13 +43,13 @@ public class EmbeddedServerApp
 		
 		System.getProperties().setProperty("jetty.logs", H2Util.get("jetty.logs.defautpath"));
 		
-		String file = (String) System.getProperties().get("jetty.logs");
+		String defaultPath = (String) System.getProperties().get("jetty.logs");
 		
 		PrintStream stream = null;
 		
 		try {
 			
-			stream = new PrintStream(file + "/jetty.log");
+			stream = new PrintStream(defaultPath + "/jetty.log");
 			
 		} catch (FileNotFoundException e) {
 

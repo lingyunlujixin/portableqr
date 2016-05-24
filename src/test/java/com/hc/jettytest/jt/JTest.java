@@ -3,8 +3,13 @@ package com.hc.jettytest.jt;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.h2.jdbcx.JdbcConnectionPool;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -17,7 +22,8 @@ import com.hc.jettytest.jt.h2.H2Util;
 
 public class JTest {
 
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws SQLException {
 		// TODO Auto-generated method stub
 
 		//QfEntry e = H2Util.select(2L).get(0);
@@ -37,15 +43,15 @@ public class JTest {
 		Byte len = 4;
 		System.out.println(origin.substring(1, len + 1) + " , " + origin.substring(len + 1));
 		
-		try {
-			encodeURL("http://121.42.59.173:8080/pull/?id=3492411869287C8F9AA783C635B60772FC9F", "p.png", "d:/logs");
-		} catch (WriterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	  JdbcConnectionPool pool = null;
+		
+
+			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
+
+			Connection c1 = pool.getConnection();
+			Connection c2 = pool.getConnection();
+			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
+		
 	}
 	
 	/**

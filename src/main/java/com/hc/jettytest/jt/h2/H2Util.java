@@ -44,12 +44,24 @@ public class H2Util {
 	// Slf4jLog
 	public final static Logger logger = Log.getLogger(H2Util.class);
 	
+	/**
+	 * 资源文件属性信息
+	 */
 	private final static Properties prop = new Properties();//属性集合对象
 
+	/**
+	 * 连接池
+	 */
 	private static JdbcConnectionPool pool;
 	
+	/**
+	 * 字段信息元数据
+	 */
 	public final static Map<String, String> meta = new HashMap<String, String>(10);
 	
+	/**
+	 * 生成QR用
+	 */
 	private static final Writer QR_WRITER = new MultiFormatWriter();
 
 	static {
@@ -126,6 +138,13 @@ public class H2Util {
 
 	}
 	
+	/**
+	 * 
+	 * 获取数据库连接
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
 	private static Connection connect() throws SQLException {
 		
 		if (pool == null) {
@@ -326,7 +345,6 @@ public class H2Util {
 			stmt.setLong(14, timestamp);
 			
 			stmt.addBatch();
-		
 		}
 		
 		stmt.executeBatch();
@@ -345,6 +363,7 @@ public class H2Util {
 			} 
 		}
 		
+		// 把插入的关键信息反馈给客户端
 		List<String> retVal = new ArrayList<String>();
 		
 		for(QfEntry e : ee) {
@@ -795,7 +814,7 @@ public class H2Util {
 
 	    }
 	    
-	    public static String validDate(String str) {
+	    public static String formatDate(String str) {
 	        
 	    	if(str == null)  return null;
 	    	
