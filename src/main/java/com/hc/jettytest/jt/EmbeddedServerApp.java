@@ -34,57 +34,67 @@ import org.eclipse.jetty.util.log.StdErrLog;
 
 import com.hc.jettytest.jt.h2.H2Util;
 
+/**
+ * <br>带main函数的启动类</br>
+ * 
+ * <br>嵌入式jetty的入口类，将各ContextHandler注册到server</br>
+ * 
+ * <br>并初始化日志系统</br>
+ * 
+ * @author Lujx
+ *
+ */
 public class EmbeddedServerApp
 {
-	
-	private final static Logger logger = Log.getLogger(EmbeddedServerApp.class);
-	
-	static {
-		
-		System.getProperties().setProperty("jetty.logs", H2Util.get("jetty.logs.defautpath"));
-		
-		String defaultPath = (String) System.getProperties().get("jetty.logs");
-		
-		PrintStream stream = null;
-		
-		try {
-			
-			stream = new PrintStream(defaultPath + "/jetty.log");
-			
-		} catch (FileNotFoundException e) {
 
-			e.printStackTrace(System.err);
-		}
-		
-		// 默认日志时
-		if(logger instanceof StdErrLog) {
-			((StdErrLog) logger).setStdErrStream(stream);
-		}
-	}
-	
+    private final static Logger logger = Log.getLogger(EmbeddedServerApp.class);
+
+    static {
+
+        System.getProperties().setProperty("jetty.logs", H2Util.get("jetty.logs.defautpath"));
+
+        String defaultPath = (String) System.getProperties().get("jetty.logs");
+
+        PrintStream stream = null;
+
+        try {
+
+            stream = new PrintStream(defaultPath + "/jetty.log");
+
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace(System.err);
+        }
+
+        // 默认日志时
+        if(logger instanceof StdErrLog) {
+            ((StdErrLog) logger).setStdErrStream(stream);
+        }
+    }
+
 public static void main( String[] args ) throws Exception
 {
-	
+    // new server
     Server server = new Server( Integer.valueOf(H2Util.get("jetty.port")) );
 
     // Add a single handler on context "/hello"
     ContextHandler contextPull = new ContextHandler("/push");
     // contextPull.setContextPath(  );
     contextPull.setHandler(new PushHandler());
-    
+
     ContextHandler contextPush = new ContextHandler("/pull");
     contextPush.setHandler(new PullHandler());
-    
+
     ContextHandler contextTest = new ContextHandler("/test");
     contextTest.setHandler(new TestHandler());
-    
+
     ContextHandler contextRes = new ContextHandler("/res");
     ResourceHandler resource_handler = new ResourceHandler();
     resource_handler.setDirectoriesListed(true);
     // resource_handler.setWelcomeFiles(new String[]{ "l.png" });
     resource_handler.setResourceBase(H2Util.get("qr.encode.base"));
     contextRes.setHandler(resource_handler);
-    
+
     // Can be accessed using http://localhost:8080/hello
 
     ContextHandlerCollection contexts = new ContextHandlerCollection();
@@ -94,7 +104,7 @@ public static void main( String[] args ) throws Exception
 
     // Start the server
     logger.info("Start the server....");
-    
+
     server.start();
     server.join();
 }

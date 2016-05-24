@@ -15,9 +15,11 @@ import com.hc.jettytest.jt.bean.QfEntry;
 import com.hc.jettytest.jt.h2.H2Util;
 
 /**
- * Pull - Data
+ * <br> Pull( retrieve ) - Data Handler </br>
+ * 
+ * <br> 扫码时就调用此类的handle函数返回结果  </br>
  *  
- * @author admin
+ * @author Lujx
  *
  */
 public class PullHandler extends AbstractHandler

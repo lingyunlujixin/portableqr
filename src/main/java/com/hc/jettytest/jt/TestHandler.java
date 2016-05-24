@@ -17,9 +17,11 @@ import com.hc.jettytest.jt.bean.QfEntry;
 import com.hc.jettytest.jt.h2.H2Util;
 
 /**
- * test - Data
+ * <br> test - Data </br>
+ * 
+ * <br> 反馈数据库总条数、某日新增条数等额外信息便于客户端参考  </br>
  *  
- * @author admin
+ * @author Lujx
  *
  */
 public class TestHandler extends AbstractHandler

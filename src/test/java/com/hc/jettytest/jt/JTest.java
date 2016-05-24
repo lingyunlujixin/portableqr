@@ -3,13 +3,12 @@ package com.hc.jettytest.jt;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.sql.Connection;
+// import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.h2.jdbcx.JdbcConnectionPool;
+// import org.h2.jdbcx.JdbcConnectionPool;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -43,14 +42,12 @@ public class JTest {
 		Byte len = 4;
 		System.out.println(origin.substring(1, len + 1) + " , " + origin.substring(len + 1));
 		
-	  JdbcConnectionPool pool = null;
-		
-
-			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
-
-			Connection c1 = pool.getConnection();
-			Connection c2 = pool.getConnection();
-			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
+//	  JdbcConnectionPool pool = null;
+//		
+//
+//			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
+//
+//			pool = JdbcConnectionPool.create( H2Util.get("h2.url"), "sa", "");
 		
 	}
 	
