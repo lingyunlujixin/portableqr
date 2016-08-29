@@ -38,13 +38,24 @@ public class TestHandler extends AbstractHandler
         
         response.setStatus(HttpServletResponse.SC_OK);
         
+        logger.info(target);
+        
         String req1 = request.getParameter("manu");
         
         String req2 = request.getParameter("today");
-        
+
         // is date
         String sval = H2Util.formatDate(req1);
         String today = H2Util.formatDate(req2);
+        
+        // 另一个数据取法，替代today
+        if (target != null && target.length() > 1) {
+            
+        	String  testTar = H2Util.formatDate(target.substring(1));
+        	
+        	today = testTar == null ? sval : testTar;
+        }
+
         
         List<QfEntry> lst = null;
         
@@ -79,7 +90,9 @@ public class TestHandler extends AbstractHandler
 
         	// lval = Long.parseLong(req);
         	cnt = H2Util.count();
-        	print = "<br> Current count : " + cnt + "<br>";
+        	print =   "<br> Current count : " + cnt + "<br>"
+    			+ "<br> 帮助 （1） 输入 [ ~/test/?manu=20160527 ] 查看制造日期为20160527的数据<br>"
+        		+ "<br> 帮助 （2） 输入 [ ~/test/?today=20160527 ] 查看输入日期为20160527的数据<br>";
         	
         	logger.info(print);
         	
