@@ -873,6 +873,11 @@ public class H2Util {
         return reqURL.replace("push", "pull") + "?" + "id=" + param[0] + param[1] + param[2];
 
     }
+    
+    public final static String makeRequestId(Long autoId, String serialNum) {
+    	
+    	return Integer.toHexString(String.valueOf(autoId).length()).toUpperCase() + autoId + MD5(serialNum);
+    }
 
 
     /**

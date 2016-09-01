@@ -69,21 +69,13 @@ public class TestHandler extends AbstractHandler
         	
         	lst = H2Util.selectByManuDate(sval);
         	
-        	int i = 1;
         	print = "<br> ManuDate : " + sval + "<br>";
-        	for (QfEntry e : lst) {
-        		print = print + "<br> => ( " + i++ + " ) " + e.getId() + " : " + e.getSerialNum() + "<br>";
-        	}
         	
         } else if(today != null) {
         	
         	lst = H2Util.selectByStamp(today);
         	
-        	int i = 1;
         	print = "<br> stamp : " + today + "<br>";
-        	for (QfEntry e : lst) {
-        		print = print + "<br> => ( " + i++ + " ) " + e.getId() + " : " + e.getSerialNum() + "<br>";
-        	}
         
         } else {
         	
@@ -92,11 +84,17 @@ public class TestHandler extends AbstractHandler
         	cnt = H2Util.count();
         	print =   "<br> Current count : " + cnt + "<br>"
     			+ "<br> 帮助 （1） 输入 [ ~/test/?manu=20160527 ] 查看制造日期为20160527的数据<br>"
-        		+ "<br> 帮助 （2） 输入 [ ~/test/?today=20160527 ] 查看输入日期为20160527的数据<br>";
+        		+ "<br> 帮助 （2） 输入 [ ~/test/?today=20160527 ] 或 [ ~/test/20160527 ]查看输入日期为20160527的数据<br>";
         	
         	logger.info(print);
         	
         }
+        
+    	int i = 1;
+    	for (QfEntry e : lst) {
+    		
+    		print = print + "<br> => ( " + i++ + " ) #" + e.getId() + "#" + e.getSerialNum() + "#" + H2Util.makeRequestId(e.getId(), e.getSerialNum()) + "<br>";
+    	}
 
         PrintWriter out = response.getWriter();
         

@@ -22,3 +22,4 @@
 (4) 启动方式：java -Xms64m -Xmx256M -cp .;lib/*;jt_basejt9.0__.jar com.hc.jettytest.jt.EmbeddedServerApp
 
 curl -X POST http://121.42.59.173:8080/push/ -d "[{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/27','motorType':'EX4','nation':'中华人民共和国','price':'8999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'AX500Z8010JQF003','weight':'550Kg'},{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/27','motorType':'EX3','nation':'中华人民共和国','price':'9999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'AX500Z8010JQF004','weight':'550Kg'} ]" 
+

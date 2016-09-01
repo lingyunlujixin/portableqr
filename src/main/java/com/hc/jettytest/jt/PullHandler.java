@@ -58,7 +58,7 @@ public class PullHandler extends AbstractHandler
         }
         
         System.out.println("x: " + e.toHTMLString());
-        out.println("<br>" + e.toHTMLString());
+        out.println("<img src=\"/res/20160901/2337C4A5D2B0E89EF330C77F881AE9C3740.png\" alt=\"上海鲜花港 - 郁金香\" /><br>" + e.toHTMLString());
         
         baseRequest.setHandled(true);
     }
