@@ -303,9 +303,12 @@ public class H2Util {
                             + "  sealer,"
                             + "  sealerTel,"
                             + "  price,"
+                            + "  sizeof,"
+                            + "  tire,"
+                            + "  detail,"
                             + "  load_stamp"
                             + ") "
-                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ;";
+                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ;";
 
         logger.info(sql);
 
@@ -353,9 +356,18 @@ public class H2Util {
 
             // 价格
             stmt.setString(13, e.getPrice());
+            
+            // 尺寸
+            stmt.setString(14, e.getSizeof());
+            
+            // 轮胎
+            stmt.setString(15, e.getTire());
+            
+            // 详细配置
+            stmt.setString(16, e.getDetail());
 
             // 时间
-            stmt.setLong(14, timestamp);
+            stmt.setLong(17, timestamp);
 
             stmt.addBatch();
         }
@@ -429,7 +441,10 @@ public class H2Util {
                             + "  manuDate,  \n"
                             + "  sealer,    \n"
                             + "  sealerTel, \n"
-                            + "  price      \n"
+                            + "  price    , \n"
+                            + "  sizeof   , \n"
+                            + "  tire     , \n"
+                            + "  detail     \n"
                             + "FROM E_VEHICLE_INFO \n"
                             + "WHERE id = " + id;
 
@@ -469,6 +484,12 @@ public class H2Util {
             qf.setSealerTel(rs.getString(12));
 
             qf.setPrice(rs.getString(13));
+            
+            qf.setSizeof(rs.getString(14));
+            
+            qf.setTire(rs.getString(15));
+            
+            qf.setDetail(rs.getString(16));
 
             result.add(qf);
         }
@@ -824,8 +845,8 @@ public class H2Util {
             // List<QfEntry> ee = JSON.parseArray(json, QfEntry.class);
 
             // inserts(ee);
-        	
-        	pressText("abcde", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740_p.png", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740.png");
+        	// System.out.println(replaceLast(""));
+        	// pressText("abcde", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740_p.png", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740.png");
 
         }
 
@@ -919,6 +940,7 @@ public class H2Util {
 
             MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
             
+            // 加入文本
             pressText(s[3], path.toString().replace(".", "_2."), path.toString());
 
         } catch(IOException e) {
@@ -1025,4 +1047,16 @@ public class H2Util {
                  return "default";
              } 
      }
+    
+    private static String replaceLast(String target, String oldStr, String newStr) {
+    	
+    	if(target == null) {
+    		return null;
+    	}
+    	
+    	int pos = target.lastIndexOf(oldStr);
+    	
+    	return target.substring(0, pos) + newStr + target.substring(pos + oldStr.length());
+    	
+    }
 }

@@ -8,16 +8,50 @@ public class QfEntry {
 	
 	private long id;
 	
+	/**
+	 * 制造国
+	 */
 	private String nation;
 	
+	/**
+	 * 制造商
+	 */
 	private String company;
 	
-	private String serialNum;
+	/**
+	 * 尺寸
+	 */
+	private String  sizeof;
 	
 	/**
 	 * 产品名称
 	 */
 	private String prodName;
+	
+	/**
+	 * 车架号
+	 */
+	private String serialNum;
+	
+	/**
+	 * 功率
+	 */
+	private String capacity;
+	
+	/**
+	 * 电机型号	
+	 */
+	private String motorType;
+	
+	/**
+	 * 电池电压容量
+	 */
+	private String  battery;
+	
+	/**
+	 * 轮胎编号
+	 */
+	private String  tire;
 	
 	/**
 	 * 整备质量
@@ -29,21 +63,6 @@ public class QfEntry {
 	 */
 	private String seatCount;
 	
-	/**
-	 * 电机型号	
-	 */
-	private String motorType;
-	
-	/**
-	 * 功率
-	 */
-	private String capacity;
-	
-	/**
-	 * 电池电压容量
-	 */
-	private String  battery;
-
 	/**
 	 * 出厂日期
 	 */
@@ -60,10 +79,92 @@ public class QfEntry {
 	private String  sealerTel;
 	
 	/**
-	 * 出厂价
+	 * 零售价
 	 */
 	private String  price;
 	
+	/**
+	 * 详细配置
+	 */
+	private String  detail;
+	
+	/**
+	 * 其他
+	 */
+	private String  other;
+	
+	public String getSizeof() {
+		return sizeof;
+	}
+
+	public void setSizeof(String sizeof) {
+		this.sizeof = sizeof;
+	}
+
+	public String getTire() {
+		return tire;
+	}
+
+	public void setTire(String tire) {
+		this.tire = tire;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(String other) {
+		this.other = other;
+	}
+
+	public String getRemark06() {
+		return remark06;
+	}
+
+	public void setRemark06(String remark06) {
+		this.remark06 = remark06;
+	}
+
+	public String getRemark07() {
+		return remark07;
+	}
+
+	public void setRemark07(String remark07) {
+		this.remark07 = remark07;
+	}
+
+	public String getRemark08() {
+		return remark08;
+	}
+
+	public void setRemark08(String remark08) {
+		this.remark08 = remark08;
+	}
+
+	public String getRemark09() {
+		return remark09;
+	}
+
+	public void setRemark09(String remark09) {
+		this.remark09 = remark09;
+	}
+
+	public String getRemark10() {
+		return remark10;
+	}
+
+	public void setRemark10(String remark10) {
+		this.remark10 = remark10;
+	}
+
 	/**
 	 * 备用
 	 */
@@ -90,6 +191,27 @@ public class QfEntry {
 	 * 备用
 	 */
 	private String  remark05;
+
+	/**
+	 * 备用
+	 */
+	private String  remark06;
+	/**
+	 * 备用
+	 */
+	private String  remark07;
+	/**
+	 * 备用
+	 */
+	private String  remark08;
+	/**
+	 * 备用
+	 */
+	private String  remark09;
+	/**
+	 * 备用
+	 */
+	private String  remark10;
 	
 	
 	public long getId() {
@@ -250,17 +372,24 @@ public class QfEntry {
 		
 		Class<?> c = this.getClass();
 		
+		b.append("<table class=\"gridtable\">");
+		
 		try {
 			for( Field f : c.getDeclaredFields()) {
 				
-				if(!f.getName().contains("remark")) {
+				String font = "<font size=\"6\" face=\"微软雅黑\" color=\"" + color(f.getName()) + "\"/>";
+				
+				if(		   !f.getName().contains("remark") 
+						&& !f.getName().contains("other")
+						&& !"id".equals(f.getName())) {
 
-					b.append(  "</br><font size=\"6\" face=\"微软雅黑\" color=\"" 
-					         + color(f.getName()) + "\">" 
+					b.append(  "<tr><td nowrap=\"nowrap\">"
+							 + font
 							 + H2Util.meta.get(f.getName().toUpperCase()) 
-							 + " : " 
+							 + "</td><td>" 
+							 + font
 							 + String.valueOf(f.get(this)) 
-							 + "</font></br>");
+							 + "</td></tr>");
 
 				}
 			}
@@ -268,6 +397,9 @@ public class QfEntry {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		b.append("</table>");
+		
 		return b.toString();
 		
 	}
