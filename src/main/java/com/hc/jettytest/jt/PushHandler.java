@@ -73,7 +73,7 @@ public class PushHandler extends AbstractHandler
         	String url = H2Util.makeRequestURL(request, s1);
         	
         	// 对url进行编码，生成访问二维码，返回这个二维码图片对应的url地址给客户端，便于客户端直接访问 二维码
-        	String qrurl = H2Util.encodeURL(request, url, H2Util.yyyymmdd(), s1[0] + s1[1]+ s1[2]);
+        	String qrurl = H2Util.encodeURL(request, url, H2Util.yyyymmdd(), s1);
         	
         	out.println("\n(1) URL : " + url + "\n(2) SER : " + s1[3] + "\n(3) QRU : " + qrurl);
         }

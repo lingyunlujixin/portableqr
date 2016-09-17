@@ -58,7 +58,14 @@ public class PullHandler extends AbstractHandler
         }
         
         System.out.println("x: " + e.toHTMLString());
-        out.println("<img src=\"/res/20160901/2337C4A5D2B0E89EF330C77F881AE9C3740.png\" alt=\"上海鲜花港 - 郁金香\" /><br>" + e.toHTMLString());
+        
+        // 加入颜色照片的支持 Add 2016/09/08
+        String imgHtml = "";
+        if(e.getRemark01() != null && !"".equals(e.getRemark01().trim()) ) {
+        	imgHtml = String.format("<img src=\"/res/color/%1$s.%2$s\" alt=\"%1$s\" /><br>", e.getRemark01(), "png");	
+        }
+        
+        out.println(imgHtml + e.toHTMLString());
         
         baseRequest.setHandled(true);
     }

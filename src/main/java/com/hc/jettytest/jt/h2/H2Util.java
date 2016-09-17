@@ -1,11 +1,17 @@
 package com.hc.jettytest.jt.h2;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,15 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-
-import java.security.MessageDigest;
 
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.h2.jdbcx.JdbcConnectionPool;
 
-import com.alibaba.fastjson.JSON;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -815,11 +819,13 @@ public class H2Util {
             // selectByManuDate("2015/09/09");
             // System.out.println(validDate("205/19/09"));
 
-            String json = "[{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/13','motorType':'EX4','nation':'中华人民共和国','price':'8999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'ZX500Z8010JQF003','weight':'550Kg'},{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/13','motorType':'EX3','nation':'中华人民共和国','price':'9999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'ZX500Z8010JQF004','weight':'550Kg'} ]";
+            // String json = "[{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/13','motorType':'EX4','nation':'中华人民共和国','price':'8999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'ZX500Z8010JQF003','weight':'550Kg'},{'battery':'12V55AH','capacity':'600kw','company':'山东高唐庆丰有限公司','manuDate':'2016/05/13','motorType':'EX3','nation':'中华人民共和国','price':'9999元','prodName':'二代车','sealer':'销售商-某某某','sealerTel':'0635-09090909','seatCount':'4','serialNum':'ZX500Z8010JQF004','weight':'550Kg'} ]";
 
-            List<QfEntry> ee = JSON.parseArray(json, QfEntry.class);
+            // List<QfEntry> ee = JSON.parseArray(json, QfEntry.class);
 
-            inserts(ee);
+            // inserts(ee);
+        	
+        	pressText("abcde", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740_p.png", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740.png");
 
         }
 
@@ -890,11 +896,12 @@ public class H2Util {
      * @param fileName
      * @return
      */
-    public static String encodeURL(HttpServletRequest request,String content, String ymdPath, String fileName) {
+    public static String encodeURL(HttpServletRequest request,String content, String ymdPath, String[] s) {
 
         int width = 200; // 图像宽度
         int height = 200; // 图像高度
         String format = "png";// 图像类型
+        String fileName = s[0] + s[1] + s[2];
 
         File p = new File(H2Util.get("qr.encode.base") + "/" + ymdPath);
 
@@ -911,6 +918,8 @@ public class H2Util {
             Path path = FileSystems.getDefault().getPath(p.getPath(), fileName + "." + format);
 
             MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
+            
+            pressText(s[3], path.toString().replace(".", "_2."), path.toString());
 
         } catch(IOException e) {
 
@@ -924,7 +933,77 @@ public class H2Util {
         }
 
         return request.getRequestURL().toString()
-                .replace("push", "res") + ymdPath + "/" + fileName + "." + format;
+                .replace("push", "res") + ymdPath + "/" + fileName + "_2." + format;
+    }
+    
+    /**
+     * @为图片添加文字
+     * 
+     * @param pressText 文字
+     * @param newImg    带文字的图片
+     * @param targetImg 需要添加文字的图片
+     * @param fontStyle 
+     * @param color
+     * @param fontSize
+     * @param width
+     * @param heigh
+     */
+    public static void pressText(String pressText, String newImg, String targetImg) { 
+        
+        try {
+        	
+            File file = new File(targetImg);
+            
+            Image src = ImageIO.read(file);
+            
+            int imageW = src.getWidth(null);
+            
+            int imageH = src.getHeight(null);
+            
+            BufferedImage image = new BufferedImage(imageW, imageH, BufferedImage.TYPE_INT_RGB);
+            
+            Graphics g = image.createGraphics();
+            
+            //计算文字开始的位置
+            
+            //x开始的位置：（图片宽度-字体大小*字的个数）/2
+            
+            int fontW = 0;
+            for(int i = 0; i < pressText.length(); i++) {
+            	fontW += g.getFontMetrics().charWidth(pressText.charAt(i));
+            }
+            
+            int startX = (imageW - fontW) / 2;
+            
+            //y开始的位置：图片高度-（图片高度-图片宽度）/2
+            
+            int startY = imageH-(imageH-imageW)/2 - 13;   
+            
+            g.setColor(Color.BLACK);
+            
+            g.drawImage(src, 0, 0, imageW, imageH, null);
+
+            g.drawString(pressText, startX, startY);
+            
+            g.dispose();
+
+            FileOutputStream out = new FileOutputStream(newImg);
+            
+            ImageIO.write(image, "png", out);
+//            
+//            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//            
+//            encoder.encode(image);
+            
+            out.close();
+            
+            System.out.println("image press success");
+            
+        } catch (Exception e) {
+        	
+        	e.printStackTrace();
+            System.out.println(e);
+        }
     }
 
     public static String yyyymmdd() {
