@@ -361,7 +361,7 @@ public class H2Util {
             stmt.setString(14, e.getSizeof());
             
             // 轮胎
-            stmt.setString(15, e.getTire());
+            stmt.setString(15, e.getTire().replaceAll("\r", "<br>"));
             
             // 详细配置
             stmt.setString(16, e.getDetail());
