@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -43,14 +44,41 @@ public class PushHandler extends AbstractHandler
     {
         response.setContentType("text/html; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
+        
+		request.setCharacterEncoding("GBK");
+		
+		Map<String, String[]> map = request.getParameterMap();
+		
+		String json, crlf;
+		
+		// 如果从浏览器端push
+		if(map.size() > 0) {
+			
+			StringBuffer json0 = new StringBuffer("{");
+			
 
-        // download(response);
+			for(String k : map.keySet()) {
+				json0.append(String.format("'%1$s':'%2$s'", k, map.get(k)[0]));
+				json0.append(",");
+			}
+			
+			json0.deleteCharAt(json0.length() - 1).append("}");
+			
+			json = json0.toString();
+			
+			crlf = "<br>";
+			
+		// 通过curl进行push
+		} else {
+	        
+	        json = getJsonFromRequest(request);
+	        
+	        crlf = "\n";
+		}
+		
         
         PrintWriter out = response.getWriter();
-        
-        // ServletOutputStream outstream = response.getOutputStream();
-        
-        String json = getJsonFromRequest(request);
+
         
         logger.info(json);
         
@@ -75,7 +103,7 @@ public class PushHandler extends AbstractHandler
         	// 对url进行编码，生成访问二维码，返回这个二维码图片对应的url地址给客户端，便于客户端直接访问 二维码
         	String qrurl = H2Util.encodeURL(request, url, H2Util.yyyymmdd(), s1);
         	
-        	out.println("\n(1) URL : " + url + "\n(2) SER : " + s1[3] + "\n(3) QRU : " + qrurl);
+        	out.println(String.format("%1$s(1) URL : %2$s%1$s(2) SER : %3$s%1$s(3) QRU : %4$s", crlf, url, s1[3], qrurl));
         }
 
         baseRequest.setHandled(true);
@@ -87,7 +115,7 @@ public class PushHandler extends AbstractHandler
 		BufferedReader reader;
 		try {
 
-			request.setCharacterEncoding("GBK");
+			// request.setCharacterEncoding("GBK");
 			
 			reader = request.getReader();
 			while ((line = reader.readLine()) != null) {

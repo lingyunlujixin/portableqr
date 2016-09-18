@@ -70,6 +70,10 @@ public class EmbeddedServerApp
         if(logger instanceof StdErrLog) {
             ((StdErrLog) logger).setStdErrStream(stream);
         }
+        
+        System.setProperty("org.eclipse.jetty.util.UrlEncoding.charset", "UTF-8");
+        System.setProperty("org.eclipse.jetty.util.URI.charset", "UTF-8");
+
     }
 
 public static void main( String[] args ) throws Exception
@@ -79,6 +83,7 @@ public static void main( String[] args ) throws Exception
 
     // Add a single handler on context "/hello"
     ContextHandler contextPull = new ContextHandler("/push");
+    
     // contextPull.setContextPath(  );
     contextPull.setHandler(new PushHandler());
 

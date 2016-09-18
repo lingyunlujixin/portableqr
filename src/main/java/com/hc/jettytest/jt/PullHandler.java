@@ -65,38 +65,49 @@ public class PullHandler extends AbstractHandler
         	imgHtml = String.format("<img src=\"/res/color/%1$s.%2$s\" alt=\"%1$s\" /><br>", e.getRemark01(), "png");	
         }
         
-        String style =    "<style type=text/css>"
-        				+ "table.gridtable {"
-        				+ "font-family: verdana,arial,sans-serif;"
-        				+ "font-size:11px;"
-        				+ "color:#333333;"
-        				+ "border-width: 1px;"
-        				+ "border-color: #666666;"
-        				+ "border-collapse: collapse;"
-        				+ "}"
-	//        				+ "table.gridtable th {"
-	//        				+ "border-width: 1px;"
-	//        				+ "padding: 8px;"
-	//        				+ "border-style: solid;"
-	//        				+ "border-color: #666666;"
-	//        				+ "background-color: #dedede;"
-	//        				+ "}"
-        				+ "table.gridtable td {"
-			        	+ "border-width: 1px;"
-			        	+ "padding: 8px;"
-			        	+ "border-style: ridge;"
-			        	+ "border-color: #666666;"
-			        	+ "background-color: #ffffff;"
-			        	+ "}"
-        			   + "</style>";
         // bgcolor=\"%1$s\"
         String output  = "<body>" + style + imgHtml + e.toHTMLString() + "</body>";
         
-        
+        // 暂时不要背景色，此行起作用需要body的bgcolor属性设置配合
         out.println(String.format(output, H2Util.get("bgcolor", "#EE82EE")));
         
         
         baseRequest.setHandled(true);
+    }
+
+   /**
+    * css style（用静态表示）
+    */
+   private static String style;
+    
+    static {
+    	
+    	style =       "<style type=text/css>"
+    
+					+ "table.gridtable {"
+					+ "font-family: verdana,arial,sans-serif;"
+					+ "font-size:11px;"
+					+ "color:#333333;"
+					+ "border-width: 1px;"
+					+ "border-color: #666666;"
+					+ "border-collapse: collapse;"
+					+ "}"
+//        				+ "table.gridtable th {"
+//        				+ "border-width: 1px;"
+//        				+ "padding: 8px;"
+//        				+ "border-style: solid;"
+//        				+ "border-color: #666666;"
+//        				+ "background-color: #dedede;"
+//        				+ "}"
+					+ "table.gridtable td {"
+		        	+ "border-width: 1px;"
+		        	+ "padding: 8px;"
+		        	+ "border-style: ridge;"
+		        	+ "border-color: #666666;"
+		        	+ "background-color: #ffffff;"
+		        	+ "}"
+				    + "</style>";
+    	
     }
 }
 
