@@ -379,6 +379,7 @@ public class QfEntry {
 				
 				String font = "<font size=\"6\" face=\"微软雅黑\" color=\"" + color(f.getName()) + "\"/>";
 				
+				// 刨去不展示的字段
 				if(		   !f.getName().contains("remark") 
 						&& !f.getName().contains("other")
 						&& !"id".equals(f.getName())) {

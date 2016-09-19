@@ -93,17 +93,20 @@ public static void main( String[] args ) throws Exception
     ContextHandler contextTest = new ContextHandler("/test");
     contextTest.setHandler(new TestHandler());
 
+    // 同时将资源也设置为默认的请求地址'/'
     ContextHandler contextRes = new ContextHandler("/res");
+    ContextHandler contextResDeault = new ContextHandler("/");
+    
     ResourceHandler resource_handler = new ResourceHandler();
     resource_handler.setDirectoriesListed(true);
-    // resource_handler.setWelcomeFiles(new String[]{ "l.png" });
+    resource_handler.setWelcomeFiles(new String[]{ "push.html" });
     resource_handler.setResourceBase(H2Util.get("qr.encode.base"));
     contextRes.setHandler(resource_handler);
-
+    contextResDeault.setHandler(resource_handler);
     // Can be accessed using http://localhost:8080/hello
 
     ContextHandlerCollection contexts = new ContextHandlerCollection();
-    contexts.setHandlers(new Handler[] { contextPush, contextPull, contextTest, contextRes });
+    contexts.setHandlers(new Handler[] { contextPush, contextPull, contextTest, contextRes,contextResDeault });
 
     server.setHandler(contexts);
 
