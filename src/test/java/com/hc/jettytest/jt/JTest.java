@@ -42,6 +42,8 @@ public class JTest {
 		Byte len = 4;
 		System.out.println(origin.substring(1, len + 1) + " , " + origin.substring(len + 1));
 		
+		System.out.printf("ni hao %1$-20s xx", "123");
+		
 //	  JdbcConnectionPool pool = null;
 //		
 //

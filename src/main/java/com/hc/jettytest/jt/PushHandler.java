@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.hc.jettytest.jt.bean.QfEntry;
@@ -34,7 +33,7 @@ import com.hc.jettytest.jt.h2.H2Util;
 public class PushHandler extends AbstractHandler
 {
 
-	private final static Logger logger = Log.getLogger(PushHandler.class);
+	// private final static Logger logger = Log.getLogger(PushHandler.class);
 	
     public void handle( String target,
                         Request baseRequest,
@@ -47,47 +46,16 @@ public class PushHandler extends AbstractHandler
         
 		request.setCharacterEncoding("GBK");
 		
-		Map<String, String[]> map = request.getParameterMap();
-		
-		String json, crlf;
-		
-		// 如果从浏览器端push
-		if(map.size() > 0) {
-			
-			StringBuffer json0 = new StringBuffer("{");
-			
-
-			for(String k : map.keySet()) {
-				json0.append(String.format("'%1$s':'%2$s'", k, map.get(k)[0]));
-				json0.append(",");
-			}
-			
-			json0.deleteCharAt(json0.length() - 1).append("}");
-			
-			json = json0.toString();
-			
-			crlf = "<br>";
-			
-		// 通过curl进行push
-		} else {
-	        
-	        json = getJsonFromRequest(request);
-	        
-	        crlf = "\n";
-		}
-		
+		Map<String, String> data = from(request);
         
         PrintWriter out = response.getWriter();
-
-        
-        logger.info(json);
         
         List<QfEntry> es = new ArrayList<QfEntry>(1);
         
-        if(json.trim().charAt(0) == '[') {
-        	es.addAll(JSON.parseArray(json, QfEntry.class));
+        if(data.get("json").trim().charAt(0) == '[') {
+        	es.addAll(JSON.parseArray(data.get("json"), QfEntry.class));
         } else {
-        	es.add(JSON.parseObject(json, QfEntry.class));
+        	es.add(JSON.parseObject(data.get("json"), QfEntry.class));
         }
         
         // 返回值: List<len#id#MD5#SerialNum>
@@ -103,7 +71,10 @@ public class PushHandler extends AbstractHandler
         	// 对url进行编码，生成访问二维码，返回这个二维码图片对应的url地址给客户端，便于客户端直接访问 二维码
         	String qrurl = H2Util.encodeURL(request, url, H2Util.yyyymmdd(), s1);
         	
-        	out.println(String.format("%1$s(1) URL : %2$s%1$s(2) SER : %3$s%1$s(3) QRU : %4$s", crlf, url, s1[3], qrurl));
+        	// 如果是浏览器端展示，直接输出图片
+        	String imgHtml = "curl" == data.get("source") ? "" : String.format("<br><img src=\"%1$s\"/>", qrurl);	
+
+        	out.println(String.format("%1$s(1) URL : %2$s%1$s(2) SER : %3$s%1$s(3) QRU : %4$s%5$s", data.get("crlf"), url, s1[3], qrurl, imgHtml));
         }
 
         baseRequest.setHandled(true);
@@ -177,6 +148,59 @@ public class PushHandler extends AbstractHandler
 	}  
 
 	}
+	}
+	
+	/**
+	 * 判断请求来自哪里：网页端还是curl，分别返回对应的数据以MAP的形式
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private Map<String, String> from(HttpServletRequest request) {
+		
+		Map<String, String[]> map = request.getParameterMap();
+		
+		Map<String, String> from = new HashMap<String, String>(4);
+		
+		String json, crlf, source;
+		
+		// 如果从浏览器端push
+		if(map.size() > 0) {
+			
+			StringBuffer json0 = new StringBuffer("{");
+			
+
+			for(String k : map.keySet()) {
+				json0.append(String.format("'%1$s':'%2$s'", k, map.get(k)[0]));
+				json0.append(",");
+			}
+			
+			json0.deleteCharAt(json0.length() - 1).append("}");
+			
+			json = json0.toString();
+			
+			crlf = "<br>";
+			
+			source = "brower";
+			
+		// 通过curl进行push
+		} else {
+	        
+	        json = getJsonFromRequest(request);
+	        
+	        crlf = "\n";
+	        
+			source = "curl";
+		}
+		
+		from.put("json", json);
+		
+		from.put("crlf", crlf);
+		
+		from.put("source", source);
+		
+		return from;
+		
 	}
 }
 
