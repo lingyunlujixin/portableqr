@@ -1,17 +1,12 @@
 package com.hc.jettytest.jt;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,7 +22,7 @@ import com.hc.jettytest.jt.h2.H2Util;
  * 
  * <br> 通过curl客户端向jetty批量插入数据（json形式），并生成对应你的qr图形及url </br>
  *  
- * @author Lujx
+ * @author LUJIXIN
  *
  */
 public class PushHandler extends AbstractHandler
@@ -46,7 +41,7 @@ public class PushHandler extends AbstractHandler
         
 		request.setCharacterEncoding("GBK");
 		
-		Map<String, String> data = from(request);
+		Map<String, String> data = H2Util.handleRequest(request);
         
         PrintWriter out = response.getWriter();
         
@@ -72,135 +67,56 @@ public class PushHandler extends AbstractHandler
         	String qrurl = H2Util.encodeURL(request, url, H2Util.yyyymmdd(), s1);
         	
         	// 如果是浏览器端展示，直接输出图片
-        	String imgHtml = "curl" == data.get("source") ? "" : String.format("<br><img src=\"%1$s\"/>", qrurl);	
+        	String imgHtml =    "curl" == data.get("source") 
+        			          ? "" 
+        			          : String.format("<br><img src=\"%1$s\"/>", qrurl);	
 
-        	out.println(String.format("%1$s(1) URL : %2$s%1$s(2) SER : %3$s%1$s(3) QRU : %4$s%5$s", data.get("crlf"), url, s1[3], qrurl, imgHtml));
+        	out.printf("%1$s(1) URL : %2$s%1$s(2) SER : %3$s%1$s(3) QRU : %4$s%5$s%1$s"
+        			, data.get("crlf")  // 换行符
+        			, url               // 数据URL
+        			, s1[3]             // 商品序列号
+					, qrurl             // 生成的QR-CODE的URL
+					, imgHtml           // 对应的图片是哪个
+			);         
         }
 
         baseRequest.setHandled(true);
     }
+	
+//	public void download(HttpServletResponse response ) {
+//		
+//		ServletOutputStream sos = null; 
+//		
+//		BufferedInputStream fin = null;
+//		
+////      PrintWriter writer = response.getWriter();
+//	      try {
+//	    	  sos = response.getOutputStream(); 
+//	    	  fin = new BufferedInputStream(new FileInputStream("E:\\Work\\201604\\459561f2db1a82b8a06b802b19b8c2c6.jpg"));
+//      
+//	    	  byte[] content = new byte[1024];  
+//      
+//	    	  int length;  
+//      
+//			  while ((length = fin.read(content, 0, content.length)) != -1) {  
+//				   sos.write(content, 0, length);  
+//			  }
+//			  
+//	} catch (IOException e) {
+//		//  Auto-generated catch block
+//		e.printStackTrace();
+//	}  finally {
+//      try {
+//		fin.close();
+//	      sos.flush();  
+//	      sos.close();
+//	} catch (IOException e) {
+//		//  Auto-generated catch block
+//		e.printStackTrace();
+//	}  
+//
+//	}
+//	}
     
-	private String getJsonFromRequest(HttpServletRequest request) {
-		StringBuffer json = new StringBuffer();
-		String line = null;
-		BufferedReader reader;
-		try {
-
-			// request.setCharacterEncoding("GBK");
-			
-			reader = request.getReader();
-			while ((line = reader.readLine()) != null) {
-				json.append(line);
-			}
-			if ("".equals(json.toString().trim())) {
-				if ("GET".equals(request.getMethod())) {
-					String str = new String(request.getQueryString().getBytes(
-							"iso-8859-1"), "utf-8").replaceAll("%22", "\"")
-							.replaceAll("%7B", "{").replaceAll("%7D", "}")
-							.replaceAll("%20", " ").replaceAll("%5B", "[")
-							.replaceAll("%5D", "]").replaceAll("%3A", ":")
-							.replaceAll("%2C", ",");
-					System.out.println(str);
-					java.net.URLDecoder.decode(str, "UTF-8");
-					System.out.println(str);
-					return str;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return json.toString();
-	}
-	
-	public void download(HttpServletResponse response ) {
-		
-		ServletOutputStream sos = null; 
-		
-		BufferedInputStream fin = null;
-		
-//      PrintWriter writer = response.getWriter();
-	      try {
-	    	  sos = response.getOutputStream(); 
-	    	  fin = new BufferedInputStream(new FileInputStream("E:\\Work\\201604\\459561f2db1a82b8a06b802b19b8c2c6.jpg"));
-      
-	    	  byte[] content = new byte[1024];  
-      
-	    	  int length;  
-      
-			  while ((length = fin.read(content, 0, content.length)) != -1) {  
-				   sos.write(content, 0, length);  
-			  }
-			  
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}  finally {
-      try {
-		fin.close();
-	      sos.flush();  
-	      sos.close();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}  
-
-	}
-	}
-	
-	/**
-	 * 判断请求来自哪里：网页端还是curl，分别返回对应的数据以MAP的形式
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private Map<String, String> from(HttpServletRequest request) {
-		
-		Map<String, String[]> map = request.getParameterMap();
-		
-		Map<String, String> from = new HashMap<String, String>(4);
-		
-		String json, crlf, source;
-		
-		// 如果从浏览器端push
-		if(map.size() > 0) {
-			
-			StringBuffer json0 = new StringBuffer("{");
-			
-
-			for(String k : map.keySet()) {
-				json0.append(String.format("'%1$s':'%2$s'", k, map.get(k)[0]));
-				json0.append(",");
-			}
-			
-			json0.deleteCharAt(json0.length() - 1).append("}");
-			
-			json = json0.toString();
-			
-			crlf = "<br>";
-			
-			source = "brower";
-			
-		// 通过curl进行push
-		} else {
-	        
-	        json = getJsonFromRequest(request);
-	        
-	        crlf = "\n";
-	        
-			source = "curl";
-		}
-		
-		from.put("json", json);
-		
-		from.put("crlf", crlf);
-		
-		from.put("source", source);
-		
-		return from;
-		
-	}
 }
 

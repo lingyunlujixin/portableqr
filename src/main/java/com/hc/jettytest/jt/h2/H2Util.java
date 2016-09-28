@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1059,4 +1060,92 @@ public class H2Util {
     	return target.substring(0, pos) + newStr + target.substring(pos + oldStr.length());
     	
     }
+    
+	/**
+	 * 判断请求来自哪里：网页端还是curl，分别返回对应的数据以MAP的形式
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public static Map<String, String> handleRequest(HttpServletRequest request) {
+		
+		Map<String, String[]> map = request.getParameterMap();
+		
+		Map<String, String> from = new HashMap<String, String>(4);
+		
+		String json, crlf, source;
+		
+		// 如果从浏览器端push
+		if(map.size() > 0) {
+			
+			StringBuffer json0 = new StringBuffer("{");
+			
+
+			for(String k : map.keySet()) {
+				json0.append(String.format("'%1$s':'%2$s'", k, map.get(k)[0]));
+				json0.append(",");
+			}
+			
+			json0.deleteCharAt(json0.length() - 1).append("}");
+			
+			json = json0.toString();
+			
+			crlf = "<br>";
+			
+			source = "brower";
+			
+		// 通过curl进行push
+		} else {
+	        
+	        json = getJsonFromRequest(request);
+	        
+	        crlf = "\n";
+	        
+			source = "curl";
+		}
+		
+		from.put("json", json);
+		
+		from.put("crlf", crlf);
+		
+		from.put("source", source);
+		
+		return from;
+		
+	}
+	
+	private static String getJsonFromRequest(HttpServletRequest request) {
+		StringBuffer json = new StringBuffer();
+		String line = null;
+		BufferedReader reader;
+		try {
+
+			// request.setCharacterEncoding("GBK");
+			
+			reader = request.getReader();
+			while ((line = reader.readLine()) != null) {
+				json.append(line);
+			}
+			if ("".equals(json.toString().trim())) {
+				if ("GET".equals(request.getMethod())) {
+					String str = new String(request.getQueryString().getBytes(
+							"iso-8859-1"), "utf-8").replaceAll("%22", "\"")
+							.replaceAll("%7B", "{").replaceAll("%7D", "}")
+							.replaceAll("%20", " ").replaceAll("%5B", "[")
+							.replaceAll("%5D", "]").replaceAll("%3A", ":")
+							.replaceAll("%2C", ",");
+					System.out.println(str);
+					java.net.URLDecoder.decode(str, "UTF-8");
+					System.out.println(str);
+					return str;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return json.toString();
+	}
 }
