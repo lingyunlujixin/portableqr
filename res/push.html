@@ -10,25 +10,53 @@
   <form name="save" method="POST" action="/push/" accept-charset="gbk">
       <table>
       <tr><td>制造国</td><td><input type="text" name="nation"   value="中国"  /></td></tr>
-      <tr><td>制造商</td><td><input type="text" name="company"   value="山东庆丰"  /></td></tr>
-      <tr><td>外形尺寸</td><td><input type="text" name="sizeof"  value="1345"  /></td></tr>
-      <tr><td>车辆名称</td><td><input type="text" name="prodName"  value="山东庆丰"  /></td></tr>
-      <tr><td>车架号（电机号）</td><td><input type="text" name="serialNum"  value="山东庆丰"  /></td></tr>
-      <tr><td>功率</td><td><input type="text" name="capacity"  value="山东庆丰"  /></td></tr>
-      <tr><td>电动机型号</td><td><input type="text" name="motorType"  value="山东庆丰"  /></td></tr>
-      <tr><td>电池型号</td><td><input type="text" name="battery"  value="山东庆丰"  /></td></tr>
-      <tr><td>轮胎编号</td><td><input type="text" name="tire"  value="山东庆丰"  /></td></tr>
-      <tr><td>车辆质量</td><td><input type="text" name="weight"  value="山东庆丰"  /></td></tr>
-      <tr><td>乘员数</td><td><input type="text" name="seatCount"  value="山东庆丰"  /></td></tr>
-      <tr><td>出厂日期</td><td><input type="text" name="manuDate"  value="山东庆丰"  /></td></tr>
-      <tr><td>经销商</td><td><input type="text" name="sealer"  value="山东庆丰"  /></td></tr>
-      <tr><td>经销商联系方式</td><td><input type="text" name="sealerTel"  value="山东庆丰"  /></td></tr>
-      <tr><td>参考价</td><td><input type="text" name="price"  value="山东庆丰"  /></td></tr>
-      <tr><td>详细配置</td><td><input type="text" name="detail"  value="山东庆丰" /></td></tr>
+      <tr><td>制造商</td><td><input type="text" name="company"   value="山东顺意电动车有限公司"  /></td></tr>
+      <tr><td>外形尺寸</td><td><input type="text" name="sizeof"  value="2420mm*1250mm*1560mm"  /></td></tr>
+      <tr><td>车辆名称</td><td><input type="text" name="prodName"  value="庆丰缘系列电动三轮棚车"  /></td></tr>
+      <tr><td>车架号（电机号）</td><td><input type="text" name="serialNum"  value="XXXXX"  /></td></tr>
+      <tr><td>功率</td><td><input type="text" name="capacity"  value="800瓦"  /></td></tr>
+      <tr><td>电动机型号</td><td><input type="text" name="motorType"  value="CNPW6-800"  /></td></tr>
+      <tr><td>电池型号</td><td><input type="text" name="battery"  value="60V45AH"  /></td></tr>
+      <tr><td>轮胎编号</td><td>
+      <textarea type="text" name="tire"  style="width:200px;" rows=3>前  轮：
+左后轮：
+右后轮：</textarea>
+      </td></tr>
+      <tr><td>车辆质量</td><td><input type="text" name="weight"  value="340Kg"  /></td></tr>
+      <tr><td>乘员数</td><td><input type="text" name="seatCount"  value="3人"  /></td></tr>
+      <tr><td>出厂日期</td><td><input type="text" name="manuDate"  value=""  /></td></tr>
+      <tr><td>经销商</td><td><input type="text" name="sealer"  value="大荔县时风新能源车行"  /></td></tr>
+      <tr><td>经销商联系方式</td><td><input type="text" name="sealerTel"  value="153-4913-1388"  /></td></tr>
+      <tr><td>参考价</td><td><input type="text" name="price"  value="9800元"  /></td></tr>
+      <tr><td>详细配置</td><td><textarea type="text" style="width:500px;"  name="detail">独立悬挂 一体后桥 五开门 四门中控锁 高低速 南谱电机 前后保险杠 脚踏板 行李架 铝合金轮毂 备胎 倒车影像 天窗 三个顶灯 语音故障报警 400--10轮胎</textarea>
+      </td></tr>
       </table>
       <br>
       <input type="submit" value="提交">
 
   </form>
 
+<script language="javascript">
+
+      function getNowFormatDate() {
+
+          var date = new Date();
+
+          var seperator1 = "/";
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1;
+          var strDate = date.getDate();
+          if (month >= 1 && month <= 9) {
+              month = "0" + month;
+          }
+          if (strDate >= 0 && strDate <= 9) {
+              strDate = "0" + strDate;
+          }
+          var currentdate = year + seperator1 + month + seperator1 + strDate;
+          return currentdate;
+      }
+
+      document.getElementsByName('manuDate')[0].value = getNowFormatDate();
+
+</script>
 </body>
