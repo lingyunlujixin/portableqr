@@ -19,12 +19,13 @@ package com.hc.jettytest.jt;
 //========================================================================
 //
 
-import org.eclipse.jetty.server.Server;
-
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -81,18 +82,6 @@ public static void main( String[] args ) throws Exception
     // new server
     Server server = new Server( Integer.valueOf(H2Util.get("jetty.port")) );
 
-    // Add a single handler on context "/hello"
-    ContextHandler contextPull = new ContextHandler("/push");
-    
-    // contextPull.setContextPath(  );
-    contextPull.setHandler(new PushHandler());
-
-    ContextHandler contextPush = new ContextHandler("/pull");
-    contextPush.setHandler(new PullHandler());
-
-    ContextHandler contextTest = new ContextHandler("/test");
-    contextTest.setHandler(new TestHandler());
-
     // 同时将资源也设置为默认的请求地址'/'
     ContextHandler contextRes = new ContextHandler("/res");
     ContextHandler contextResDeault = new ContextHandler("/");
@@ -106,7 +95,19 @@ public static void main( String[] args ) throws Exception
     // Can be accessed using http://localhost:8080/hello
 
     ContextHandlerCollection contexts = new ContextHandlerCollection();
-    contexts.setHandlers(new Handler[] { contextPush, contextPull, contextTest, contextRes,contextResDeault });
+    contexts.setHandlers(new Handler[] {contextRes,contextResDeault });
+    
+    Map<String, String> config = H2Util.getStartsWith("handler");
+    
+    for(String k : config.keySet()) {
+    	
+    	ContextHandler ch = new ContextHandler(k);
+    	
+    	ch.setHandler((Handler) Class.forName(config.get(k)).newInstance()); 
+    	
+        contexts.addHandler(ch);
+    }
+
 
     server.setHandler(contexts);
 

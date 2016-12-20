@@ -770,6 +770,20 @@ public class H2Util {
 
         return null;
     }
+    
+    public final static Map<String, String> getStartsWith(String prefix ) {
+
+        Map<String, String> sub = new HashMap<String, String>();
+        
+        for(Object k : prop.keySet()) {
+        	
+        	String key = (String) k;
+        	
+        	if( key.startsWith(prefix)) sub.put(key.split("\\.")[1], prop.getProperty(key));
+        }
+
+        return sub;
+    }
 
     public final static String get(String key, String defautVal ) {
 
@@ -792,6 +806,7 @@ public class H2Util {
                 mdInst.update(btInput);
                 // 获得密文
                 byte[] md = mdInst.digest();
+                
                 // 把密文转换成十六进制的字符串形式
                 int j = md.length;
                 char str[] = new char[j * 2];
@@ -799,6 +814,9 @@ public class H2Util {
                 for (int i = 0; i < j; i++) {
                     byte byte0 = md[i];
                     str[k++] = hexDigits[byte0 >>> 4 & 0xf];
+                    
+                    System.out.printf("\r\nhexDigits[%1$-5s (%2$-32s) >>> 4 & 0xf] is %3$-5s, hexDigits[%1$-5s & 0xf] is %4$-5s", byte0, Integer.toBinaryString(byte0), hexDigits[byte0 >>> 4 & 0xf], hexDigits[byte0 & 0xf]);
+                    
                     str[k++] = hexDigits[byte0 & 0xf];
                 }
                 return new String(str);
@@ -848,6 +866,15 @@ public class H2Util {
             // inserts(ee);
         	// System.out.println(replaceLast(""));
         	// pressText("abcde", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740_p.png", "E:\\tmp\\imgs\\20160901\\2337C4A5D2B0E89EF330C77F881AE9C3740.png");
+        	
+//        	Map<String, String> c = getStartsWith("handler");
+//        	
+//        	for(String k : c.keySet()) {
+//        		
+//        		System.out.printf("%-30s, %-30s\r\n", k, c.get(k));
+//        	}
+        	System.out.printf(MD5("hello"));
+        	
 
         }
 
